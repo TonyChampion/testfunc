@@ -24,7 +24,7 @@ public static async Task<IActionResult> Run(HttpRequest req, ILogger log)
     string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
     var values = HttpUtility.ParseQueryString(requestBody);
  
-    string logicAppUrl = "https://prod-17.westus2.logic.azure.com:443/workflows/288574b6da704b38aa107be9651613d9/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=_KCSbn6Pbj-m40qtu4T56oOpKCqPtNnNt1mF8lGAzgY";
+    string logicAppUrl = GetEnvironmentVariable("LogicAppEndpoint");
     string id = values["Caller"];
     log.LogInformation("Caller - " + id);
 
@@ -86,4 +86,10 @@ public static string BuildHangupResponse(string message) {
         "<Hangup/>" +
         "</Response>", message);
     
+}
+
+public static string GetEnvironmentVariable(string name)
+{
+    return name + ": " +
+        System.Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
 }

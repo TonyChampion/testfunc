@@ -26,7 +26,8 @@ public static async Task<IActionResult> Run(HttpRequest req, ILogger log)
 
     var values = HttpUtility.ParseQueryString(requestBody);
  
-    string logicAppUrl = "https://prod-16.westus2.logic.azure.com:443/workflows/32a5f3742eed41c48d488120ec53b3b9/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=l4-aaZ2jyztJwdbN7lbXiworFNEciXXXDgSQEcUh_Bg";
+    string logicAppUrl = GetEnvironmentVariable("LogicAppEndpoint");
+    
     string id =  values["From"];
     log.LogInformation("Msg from - " + id);
     string input = values["Body"];
@@ -79,3 +80,10 @@ public static string BuildResponse(string message) {
         "</Response>", message);
     
 }
+
+public static string GetEnvironmentVariable(string name)
+{
+    return name + ": " +
+        System.Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
+}
+
